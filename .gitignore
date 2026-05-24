@@ -1,0 +1,3 @@
+# intermediate render artifacts (final assets live at repo root)
+_assets/*.png
+.DS_Store

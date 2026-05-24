@@ -1,0 +1,14 @@
+{
+  "name": "5k Weeks",
+  "short_name": "5k Weeks",
+  "description": "See your life as a calendar of weeks and track the five habits that make it longer, healthier, and more meaningful.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050507",
+  "theme_color": "#050507",
+  "icons": [
+    { "src": "/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}
