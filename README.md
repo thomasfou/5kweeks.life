@@ -4,44 +4,48 @@ Marketing landing page for **5k Weeks** — a habit-tracker and life-calendar ap
 
 Live at **[5kweeks.life](https://5kweeks.life)** · hosted on GitHub Pages.
 
+## Stack
+
+React 18 + Vite + TypeScript + Tailwind v3. No animation libraries — the hero is
+two static canvas layers (cold/warm life-calendar) with a CSS radial-gradient
+spotlight mask driven by a single `requestAnimationFrame` loop, plus DOM
+"evidence chip" overlays.
+
 ## Structure
 
-| File | Purpose |
+| Path | Purpose |
 | --- | --- |
-| `index.html` | Single-page landing site (all CSS/JS inline, no build step) |
-| `privacy.html` / `terms.html` | Legal pages |
-| `favicon.svg`, `favicon.ico`, `apple-touch-icon.png`, `icon-192.png`, `icon-512.png` | Icons |
-| `og-image.png` | 1200×630 social-share image |
-| `site.webmanifest` | PWA manifest |
-| `CNAME` | Custom domain for GitHub Pages |
-| `robots.txt`, `sitemap.xml` | SEO |
-| `_assets/` | Source HTML used to render `og-image.png` and the icons (not served) |
+| `index.html` / `privacy.html` / `terms.html` | The three Vite multi-page entry points (no client router) |
+| `src/components/Hero.tsx` | Hero layers + the one rAF loop (writes CSS vars only) |
+| `src/components/WeeksGrid.tsx` | Two static canvas layers A/B + CSS spotlight mask |
+| `src/components/EvidenceChips.tsx` | DOM label overlays near the cursor |
+| `src/lib/anim.ts`, `src/lib/grid.ts` | Pure animation/layout math (unit-tested) |
+| `public/` | `CNAME`, `.nojekyll`, robots, sitemap, favicons, manifest, `og-image.png` |
+| `e2e/` | Playwright smoke tests |
+| `scripts/generate-og.mjs` | Regenerates `public/og-image.png` (`npm run og`) |
 
-## Local preview
-
-It's a static site — just open `index.html`, or serve the folder:
+## Develop
 
 ```sh
-python3 -m http.server 8000
-# → http://localhost:8000
+npm install
+npm run dev        # local dev server
+npm run build      # typecheck + build → dist/
+npm run preview    # serve the built dist/
+npm test           # Vitest unit tests
+npm run test:e2e   # Playwright smokes (builds + previews automatically)
 ```
 
-## Regenerating images
+## Deploy
 
-The OG image and icons are rendered from the HTML in `_assets/` via headless Chrome:
-
-```sh
-CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-"$CHROME" --headless=new --force-device-scale-factor=2 --window-size=1200,630 \
-  --virtual-time-budget=6000 --screenshot="$PWD/_assets/og-raw.png" \
-  "file://$PWD/_assets/og-image.html"
-sips -z 630 1200 _assets/og-raw.png --out og-image.png
-```
+`.github/workflows/deploy.yml` builds `dist/` and deploys it to GitHub Pages on
+every push to `main`. GitHub Pages must be set to "GitHub Actions" as the source.
+Static deploy files (`CNAME`, `.nojekyll`, …) live in `public/` and are copied
+into `dist/` by the build.
 
 ## Notes / TODO
 
-- App-store buttons are in a **"Coming soon"** state. When the app ships, swap the
-  `.store.soon` spans in `index.html` back to `<a href="…">` links pointing at the
-  real App Store / Google Play URLs.
-- `privacy.html` / `terms.html` are sensible starting drafts — review against the
-  app's actual data practices before relying on them.
+- App-store buttons are in a **"Coming soon"** state. When the app ships, swap
+  the `aria-disabled` buttons in `src/components/StoreButtons.tsx` for real
+  `<a href="…">` links to the App Store / Google Play.
+- `privacy.html` / `terms.html` are sensible starting drafts — review against
+  the app's actual data practices before relying on them.

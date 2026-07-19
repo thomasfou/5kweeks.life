@@ -1,3 +1,6 @@
-# intermediate render artifacts (final assets live at repo root)
-_assets/*.png
+node_modules/
+dist/
+playwright-report/
+test-results/
 .DS_Store
+.gstack/
